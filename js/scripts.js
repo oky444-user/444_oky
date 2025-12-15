@@ -56,4 +56,23 @@ window.addEventListener('DOMContentLoaded', event => {
         elements: '#portfolio a.portfolio-box'
     });
 
+    // Force hero video autoplay even when browser blocks initial attempt
+    const mastheadVideo = document.getElementById('mastheadVideo');
+    if (mastheadVideo) {
+        const attemptPlay = () => {
+            const playPromise = mastheadVideo.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    mastheadVideo.muted = true;
+                    mastheadVideo.play().catch(() => {
+                        // leave poster visible if autoplay still blocked
+                    });
+                });
+            }
+        };
+
+        mastheadVideo.addEventListener('loadeddata', attemptPlay, { once: true });
+        attemptPlay();
+    }
+
 });
